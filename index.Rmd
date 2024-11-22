@@ -4,7 +4,7 @@ author: "Alexandrea Cole Patino"
 date: 11/21/24
 output: 
   flexdashboard::flex_dashboard:
-    orientation: rows # can also be columns
+    orientation: columns # can also be columns
     vertical_layout: fill # can also be scroll
     source_code: embed
     theme:
