@@ -1,36 +1,144 @@
 ---
-title: "Untitled"
+title: "CS 201 Flexdashboard on Flowers"
+author: "Alexandrea Cole Patino"
+date: 11/21/24
 output: 
   flexdashboard::flex_dashboard:
-    orientation: columns
-    vertical_layout: fill
+    orientation: columns # can also be rows
+    vertical_layout: fill # can also be scroll
+    source_code: embed
+    theme:
+      bootswatch: quartz
+    navbar:
+      - { title: "Alexandrea Cole Patino", href: "https://acpopal.github.io/", align: right }
+      - { icon: "fa fa-github", href: "https://github.com/acpopal", align: right, target: blank }
 ---
 
 ```{r setup, include=FALSE}
 library(flexdashboard)
+library(here)
+library(tidyverse)
+library(janitor)
+library(plotly)
+library(dplyr)
+library(ggplot2)
 ```
 
-Column {data-width=650}
------------------------------------------------------------------------
+```{r, echo=FALSE}
+#read in data
+flowerdata <- read_csv(here("data/flowers.csv"))
 
-### Chart A
+flowerdata <- flowerdata %>% clean_names()
+```
+
+------------------------------------------------------------------------
+
+# Data Visualizations
+
+## Column {data-width="650"}
+
+### Flower Color Distribution by Climate
 
 ```{r}
+flowerdata$color <- str_replace(flowerdata$color, "Yellow, orange", "Orange, yellow")
+flowerdata$color <- str_replace(flowerdata$color, "Yellow, white", "White, yellow")
+flowerdata$color <- str_replace(flowerdata$color, "Purple, blue, white", "Blue, purple, white")
+flowerdata$color <- str_replace(flowerdata$color, "Red, yellow, pink", "Red, pink, yellow")
+flowerdata$color <- str_replace(flowerdata$color, "White, yellow, pink", "Pink, white, yellow")
+
+color_climate_summary <- flowerdata %>%
+  group_by(color, climate) %>%
+  tally() %>%
+  arrange(color, desc(n))
+
+custom_colors <- c(
+  "cold" = "#1E90FF",
+  "cold, temperate" = "#87CEEB",
+  "Temperate" = "#32CD32",
+  "Temperate to tropical" = "#FFD700", 
+  "Tropical" = "#FF4500",
+  "Desert" = "#D2691E"
+)
+
+color_climate_plot <- ggplot(color_climate_summary, aes(x = color, y = n, fill = climate)) +
+  geom_bar(stat = "identity") +
+  scale_fill_manual(values = custom_colors) +
+  labs(title = "Flower Color Distribution by Climate",
+       x = "Color",
+       y = "Count of Flowers",
+       fill = "Climate") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
+
+interactive_color_climate_plot <- ggplotly(color_climate_plot)
+interactive_color_climate_plot
 
 ```
 
-Column {data-width=350}
------------------------------------------------------------------------
+## Column {data-width="350"}
 
-### Chart B
+### Flower Longevity by Climate and Place of Origin
 
 ```{r}
+flowerdata$climate <- str_replace(flowerdata$climate, "Tropical to temperate", "Temperate to tropical")
 
+longevity_climate_origin_plot <- ggplot(flowerdata, aes(x = place_of_origin, y = longevity_years, color = climate)) +
+  geom_count() +
+  labs(title = "Flower Longevity by Climate and Place of Origin",
+       x = "Place of Origin",
+       y = "Longevity (Years)") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
+  scale_color_manual(values = c(
+    "cold" = "blue",
+    "cold, temperate" = "lightblue",
+    "Desert" = "orange",
+    "Temperate" = "darkgreen",
+    "Temperate to tropical" = "maroon",
+    "Tropical" = "red"
+  ))
+
+interactive_longevity_climate_plot <- ggplotly(longevity_climate_origin_plot)
+interactive_longevity_climate_plot
 ```
 
-### Chart C
+### Petal Numbers by Place of Origin and Climate
 
 ```{r}
+flowerdata$height_cm <- factor(
+  flowerdata$height_cm,
+  levels = c("10-20", "15-60", "20-40", "20-60", "20-70", "20-80", "30-90", "30-100", "50-100", "50-150", "60-180", "100-200", "100-300", "300-600")
+)
+
+origin_petals_plot <- ggplot(flowerdata, aes(x = place_of_origin, y = height_cm)) +
+  geom_count(aes(color = climate), alpha = 0.7) +
+  geom_smooth(method = "lm", color = "red", se = FALSE) +  
+  labs(title = "Petal Numbers by Place of Origin and Climate",
+       x = "Place of Origin",
+       y = "Number of Petals") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
+  scale_color_manual(values = c(
+    "cold" = "blue",
+    "cold, temperate" = "lightblue",
+    "Desert" = "orange",
+    "Temperate" = "darkgreen",
+    "Temperate to tropical" = "maroon",
+    "Tropical" = "red"
+  ))
+
+interactive_height_petals_plot <- ggplotly(origin_petals_plot)
+interactive_height_petals_plot
 
 ```
 
+------------------------------------------------------------------------
+
+# Flower Data Table
+
+```{r}
+flowerdata <- flowerdata %>% 
+  select(name, height_cm, longevity_years, place_of_origin, color, climate, cut_flowers, perfumes, medicine, average_number_of_petals)
+
+knitr::kable(flowerdata)
+```
