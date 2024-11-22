@@ -4,7 +4,7 @@ author: "Alexandrea Cole Patino"
 date: 11/21/24
 output: 
   flexdashboard::flex_dashboard:
-    orientation: columns # can also be rows
+    orientation: rows # can also be columns
     vertical_layout: fill # can also be scroll
     source_code: embed
     theme:
@@ -35,8 +35,18 @@ flowerdata <- flowerdata %>% clean_names()
 
 # Data Visualizations
 
-## Column {data-width="650"}
+---
 
+Row 
+-------------------------------------
+    
+### Summary
+
+This dataset made by Maryna Shut contains information about 73 different flowers: their names, place of origin, height, longevity, industry use and number of petals. It contains 72 observations (rows) and 10 variables (columns).
+
+Row {.tabset .tabset-fade}
+-------------------------------------
+   
 ### Flower Color Distribution by Climate
 
 ```{r}
@@ -74,8 +84,6 @@ interactive_color_climate_plot <- ggplotly(color_climate_plot)
 interactive_color_climate_plot
 
 ```
-
-## Column {data-width="350"}
 
 ### Flower Longevity by Climate and Place of Origin
 
