@@ -35,18 +35,22 @@ flowerdata <- flowerdata %>% clean_names()
 
 # Data Visualizations
 
----
+------------------------------------------------------------------------
 
-Row 
--------------------------------------
-    
+## Row
+
 ### Summary
 
-This dataset made by Maryna Shut contains information about 73 different flowers: their names, place of origin, height, longevity, industry use and number of petals. It contains 72 observations (rows) and 10 variables (columns).
+This dataset made by Maryna Shut contains information about 73 different flowers: their names, place of origin, height, longevity, industry use and number of petals. It contains 72 observations (rows) and 10 variables (columns). In this dashboard, several relationships among these variables were explored:
 
-Row {.tabset .tabset-fade}
--------------------------------------
-   
+-   Flower Color Distribution by Climate: This visual explores the distribution of flower colors across different climates, including cold, temperate, tropical, and desert regions. It also highlights transitions between climates (e.g., temperate to tropical).
+
+-   Flower Longevity by Climate: This chart analyzes the longevity of flowers in relation to their climatic conditions and place of origin. It categorizes flowers based on how long they live in specific climates like temperate, tropical, and transitional zones.
+
+-   Number of Petals by Climate and Place of Origin: This visual investigates the relationship between the number of petals a flower has and its climate or place of origin. It categorizes flowers into ranges of petal numbers (e.g., 10-20, 20-40) and associates them with their respective environments, such as cold, temperate, tropical, and desert climates.
+
+## Row {.tabset .tabset-fade}
+
 ### Flower Color Distribution by Climate
 
 ```{r}
